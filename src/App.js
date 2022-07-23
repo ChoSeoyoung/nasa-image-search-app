@@ -3,8 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Header from './components/Header.js'
-import Card from './components/Card.js'
-import History from './components/History.js'
 import CardList from './components/CardList.js'
 
 import axios from 'axios';
@@ -18,11 +16,12 @@ class App extends React.Component{
       		cards: [],
 			cardIndex: 1,
 			Option: "default",
-			keyWord: '',
-			words: []
+			keyWord: "egypt",
+			words: [],
     	};
 		
     	this.imageSearch("egypt");
+		this.pageIndex=1;
   	}
 	
 
@@ -68,9 +67,7 @@ class App extends React.Component{
   	};
 		
 	InputTextChange = keyWord => {
-		this.setState({
-			keyWord: keyWord
-		});
+		this.setState({keyWord: keyWord});
 	};
 
 	SelectBoxChange = event => {
@@ -93,8 +90,31 @@ class App extends React.Component{
 			var newIndex = dataIndex+1;
 			this.setState({cardIndex: newIndex});
 			if(data<=12*newIndex){
-				var btn = document.getElementById("btn-more");
-				btn.disabled=true;
+				this.pageIndex+=1;
+				let url;
+				if (this.state.Option == "default"){
+					url = `https://images-api.nasa.gov/search?q=${this.state.keyWord}&page=${this.pageIndex}`;
+				} else if (this.state.Option == "title") {
+					url = `https://images-api.nasa.gov/search?title=${this.statekeyWord}&page=${this.pageIndex}`;
+				} else if (this.state.Option == "location"){
+					url = `https://images-api.nasa.gov/search?location=${this.state.keyWord}&page=${this.pageIndex}`;
+				} else if (this.state.Option == "year"){
+					let date_pattern = /$\d{4}$/;
+					if(!date_pattern.test(`${this.state.keyWord}`)){
+						alert("Input should be YYYY format.");
+					return;}
+				url = `https://images-api.nasa.gov/search?year=${this.state.keyWord}&page=${this.pageIndex}`;
+				}
+	
+			axios.get(url)
+			.then(res => {
+				let copyCards = [...this.state.cards];
+				res.data.collection.items.forEach(item => {
+				if (item.data[0].media_type === "image" && item.links[0].href) {
+					copyCards.push(item); //사진필수
+				}});
+				this.setState({cards: copyCards});
+				});
 			}
 		}
 	}
@@ -116,7 +136,7 @@ class App extends React.Component{
 				</i>
 			</button>
 			<div className="m-3" style={{color:"#888888"}}>
-				{this.state.cardIndex}/{Math.floor(this.state.cards.length/12+1)}
+				{this.state.cardIndex}/{Math.ceil(this.state.cards.length/12)}
 			</div>
 		</div>
 		</section>
