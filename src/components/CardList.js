@@ -17,49 +17,7 @@ const CardList = props => {
 			description = items.data[0].description;
 			return (
 				<Card
-				id={id}
-				image={image}
-				title={title}
-				date={date}
-				description={description}
-				/>
-			);
-		};
-	});
-	const cardItems2 = new Array(cardLength).fill(1).map((m, i) => {
-		const index = i;
-		const items = props.cards[index];
-
-		if (items && index%3==1) {
-			id = items.data[0].nasa_id
-			image = items.links[0].href;
-			title = items.data[0].title;
-			date = items.data[0].date_created;
-			description = items.data[0].description;
-			return (
-				<Card
-				id={id}
-				image={image}
-				title={title}
-				date={date}
-				description={description}
-				/>
-			);
-		};
-	});
-	const cardItems3 = new Array(cardLength).fill(1).map((m, i) => {
-		const index = i;
-		const items = props.cards[index];
-
-		if (items && index%3==2) {
-			id = items.data[0].nasa_id
-			image = items.links[0].href;
-			title = items.data[0].title;
-			date = items.data[0].date_created;
-			description = items.data[0].description;
-			return (
-				<Card
-				id={id}
+				key={id}
 				image={image}
 				title={title}
 				date={date}
