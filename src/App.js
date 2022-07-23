@@ -50,14 +50,16 @@ class App extends React.Component{
             }});
             this.setState({cards: filteredItems});
             this.setState({cardIndex: 1});
-            if(this.state.words.includes(`${keyWord}`)){
-                let idx = this.state.words.indexOf(`${keyWord}`);
-                this.state.words.splice(`${idx}`,1);
+			let copyArray = [...this.state.words];
+            if(copyArray.includes(`${keyWord}`)){
+                let idx = copyArray.indexOf(`${keyWord}`);
+                copyArray.splice(`${idx}`,1);
             }
-            if(this.state.words.length>7){
-                this.state.words.splice(0,1);
+            if(copyArray.length>7){
+                copyArray.splice(0,1);
             }
-            this.state.words.push(`${keyWord}`);	
+            copyArray.push(`${keyWord}`);
+			this.setState({words:copyArray});	
 		});
   	};
 		
