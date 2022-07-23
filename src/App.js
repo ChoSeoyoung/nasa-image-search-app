@@ -114,18 +114,13 @@ class App extends React.Component{
 	
 	deleteWord = keyWord => {
 		if(this.state.words.includes(`${keyWord}`)){
-			let idx = this.state.words.indexOf(`${keyWord}`);
-			this.setState((state) => {
-    			// 중요: 값을 업데이트할 때 `this.state` 대신 `state` 값을 읽어옵니다.
-				// https://ko.reactjs.org/docs/faq-state.html
-    			return {words: state.words.splice(`${idx}`,1)}
-  			});
+			this.setState({words: this.state.words.filter((element) => element !== `${keyWord}`)});
 		}
   	};
 	
 	morePages = event => {
-		var data = this.state.cards.length;
-		var dataIndex = this.state.cardIndex;
+		let data = this.state.cards.length;
+		let dataIndex = this.state.cardIndex;
 		if(data>12*dataIndex){
 			var newIndex = dataIndex+1;
 			this.setState({cardIndex: newIndex});
