@@ -41,6 +41,7 @@ class App extends React.Component{
 			return;}
 			url = `https://images-api.nasa.gov/search?year=${keyWord}`;
 		}
+
 		axios.get(url)
 		.then(res => {
       		const filteredItems = [];
@@ -59,7 +60,10 @@ class App extends React.Component{
                 copyArray.splice(0,1);
             }
             copyArray.push(`${keyWord}`);
-			this.setState({words:copyArray});	
+			this.setState({words:copyArray});
+			
+			var btn = document.getElementById("btn-more");
+			btn.disabled=false;
 		});
   	};
 		
@@ -90,8 +94,7 @@ class App extends React.Component{
 			this.setState({cardIndex: newIndex});
 			if(data<=12*newIndex){
 				var btn = document.getElementById("btn-more");
-				btn.disabled="true";
-				btn.innerText="end";
+				btn.disabled=true;
 			}
 		}
 	}
