@@ -17,14 +17,31 @@ class App extends React.Component{
     	this.state = {
       		cards: [],
 			cardIndex: 1,
+			Option: "default",
+			keyWord: '',
 			words: []
     	};
 		
     	this.imageSearch("egypt");
   	}
 	
+
 	imageSearch = keyWord => {
-		axios.get(`https://images-api.nasa.gov/search?q=${keyWord}`)
+		let url;
+		if (this.state.Option == "default"){
+			url = `https://images-api.nasa.gov/search?q=${keyWord}`;
+		} else if (this.state.Option == "title") {
+			url = `https://images-api.nasa.gov/search?title=${keyWord}`;
+		} else if (this.state.Option == "location"){
+			url = `https://images-api.nasa.gov/search?location=${keyWord}`;
+		} else if (this.state.Option == "year"){
+			let date_pattern = /$\d{4}$/;
+			if(!date_pattern.test(`${keyWord}`)){
+				alert("Input should be YYYY format.");
+			return;}
+			url = `https://images-api.nasa.gov/search?year=${keyWord}`;
+		}
+		axios.get(url)
 		.then(res => {
       		const filteredItems = [];
       		res.data.collection.items.forEach(item => {
@@ -43,75 +60,20 @@ class App extends React.Component{
             this.state.words.push(`${keyWord}`);	
 		});
   	};
-	
-	imageSearchTitle = keyWord => {
-		axios.get(`https://images-api.nasa.gov/search?title=${keyWord}`)
-		.then(res => {
-      		const filteredItems = [];
-      		res.data.collection.items.forEach(item => {
-        	if (item.data[0].media_type === "image" && item.links[0].href) {
-        		filteredItems.push(item); //사진필수
-        }});
-		this.setState({cards: filteredItems});
-		this.setState({cardIndex: 1});
-		if(this.state.words.includes(`${keyWord}`)){
-			let idx = this.state.words.indexOf(`${keyWord}`);
-			this.state.words.splice(`${idx}`,1);
-		}
-		if(this.state.words.length>7){
-			this.state.words.splice(0,1);
-		}
-		this.state.words.push(`${keyWord}`);	
+		
+	InputTextChange = keyWord => {
+		this.setState({
+			keyWord: keyWord
 		});
-  	};
-	
-	imageSearchLocation = keyWord => {
-		axios.get(`https://images-api.nasa.gov/search?location=${keyWord}`)
-		.then(res => {
-      		const filteredItems = [];
-      		res.data.collection.items.forEach(item => {
-        	if (item.data[0].media_type === "image" && item.links[0].href) {
-        		filteredItems.push(item); //사진필수
-        }});
-		this.setState({cards: filteredItems});
-		this.setState({cardIndex: 1});
-		if(this.state.words.includes(`${keyWord}`)){
-			let idx = this.state.words.indexOf(`${keyWord}`);
-			this.state.words.splice(`${idx}`,1);
-		}
-		if(this.state.words.length>7){
-			this.state.words.splice(0,1);
-		}
-		this.state.words.push(`${keyWord}`);	
-		});
-  	};
-	
-	imageSearchYear = keyWord => {
-		let date_pattern = /\d{4}$/;
-		if(!date_pattern.test(`${keyWord}`)){
-			alert("Input should be YYYY format.");
-		return;}
+	};
 
-		axios.get(`https://images-api.nasa.gov/search?year_start=${keyWord}`)
-		.then(res => {
-      		const filteredItems = [];
-      		res.data.collection.items.forEach(item => {
-        	if (item.data[0].media_type === "image" && item.links[0].href) {
-        		filteredItems.push(item); //사진필수
-        }});
-		this.setState({cards: filteredItems});
-		this.setState({cardIndex: 1});
-		if(this.state.words.includes(`${keyWord}`)){
-			let idx = this.state.words.indexOf(`${keyWord}`);
-			this.state.words.splice(`${idx}`,1);
-		}
-		if(this.state.words.length>7){
-			this.state.words.splice(0,1);
-		}
-		this.state.words.push(`${keyWord}`);	
+	SelectBoxChange = event => {
+		let sel = document.getElementById("searchbar-options");
+		this.setState({
+			Option: sel.options[sel.selectedIndex].value
 		});
-  	};
-	
+	}
+
 	deleteWord = keyWord => {
 		if(this.state.words.includes(`${keyWord}`)){
 			this.setState({words: this.state.words.filter((element) => element !== `${keyWord}`)});
@@ -136,7 +98,7 @@ class App extends React.Component{
     render(){
     	return(<div className="App">
 		<header className="App-header">
-        	<Header imageSearch={this.imageSearch} imageSearchTitle={this.imageSearchTitle} imageSearchLocation={this.imageSearchLocation} imageSearchYear={this.imageSearchYear} words={this.state.words} deleteWord={this.deleteWord}></Header>
+        	<Header imageSearch={this.imageSearch} keyWord={this.state.keyWord} Option={this.state.Option} InputTextChange={this.InputTextChange} SelectBoxChange={this.SelectBoxChange} words={this.state.words} deleteWord={this.deleteWord}></Header>
 		</header>
 		<section className="App-Section">
         <CardList cards={this.state.cards} cardIndex={this.state.cardIndex}></CardList>

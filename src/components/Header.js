@@ -4,39 +4,12 @@ import History from './History.js';
 class Header extends React.Component{
 	constructor(props) {
 		super(props);
-		
-		this.state = {
-			keyWord: '',
-			Option: "default"
-		};
-		
-	}
-	
-	InputTextChange = keyWord => {
-		this.setState({
-			keyWord: keyWord
-		});
-	};
-
-	SelectBoxChange = event => {
-		let sel = document.getElementById("searchbar-options");
-		this.setState({
-			Option: sel.options[sel.selectedIndex].value
-		});
 	}
 	
 	searchSubmit = event => {
 		//옵션에 따라 검색 유형을 달리함
-		let type = this.state.Option;
-		if(type==="default"){
-			this.props.imageSearch(this.state.keyWord);
-		}else if(type==="title"){
-			this.props.imageSearchTitle(this.state.keyWord);
-		}else if(type==="location"){
-			this.props.imageSearchLocation(this.state.keyWord);
-		}else{
-			this.props.imageSearchYear(this.state.keyWord);
-		}
+		let type = this.props.Option;
+		this.props.imageSearch(this.props.keyWord);
 	};
 	
 	render(){
@@ -48,14 +21,14 @@ class Header extends React.Component{
 			<div className="input-group" style={{width:"100%", margin:"auto"}}>
 				<div className="input-group-prepend">
 					<select id="searchbar-options" className="form-select" 
-					aria-label="Default select example" onChange={event=>this.SelectBoxChange(event)}>
+					aria-label="Default select example" onChange={event=>this.props.SelectBoxChange(event)}>
 						<option defaultValue="default" value="default">Choose...</option>
 						<option value="title">Title</option>
 						<option value="location">Location</option>
 						<option value="year">Year</option>
 	  				</select>
 				</div>
-	  			<input id="search-input" type="text" className="form-control" value={this.state.keyWord} onChange={event=>this.InputTextChange(event.target.value)}></input>
+	  			<input id="search-input" type="text" className="form-control" value={this.props.keyWord} onChange={event=>this.props.InputTextChange(event.target.value)}></input>
 	  			<div className="input-group-append">
 					<button className="btn btn-outline-primary" onClick={this.searchSubmit}>
 		 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
