@@ -16,7 +16,7 @@ class Header extends React.Component{
 	  return(
 		<div>
 			<div className="m-5" style={{width:"50vw"}}>
-				<h1 className="fw-normal"> NASA Picture Searching</h1>
+				<h1 className="fw-normal"> NASA Image Searching</h1>
 			</div>
 			<div className="input-group" style={{width:"100%", margin:"auto"}}>
 				<div className="input-group-prepend">
@@ -28,7 +28,7 @@ class Header extends React.Component{
 						<option value="year">Year</option>
 	  				</select>
 				</div>
-	  			<input id="search-input" type="text" className="form-control" value={this.props.keyWord} onChange={event=>this.props.InputTextChange(event.target.value)}></input>
+	  			<input id="search-input" placeholder="Please enter a search word..." type="text" className="form-control" onChange={event=>this.props.InputTextChange(event.target.value)}></input>
 	  			<div className="input-group-append">
 					<button className="btn btn-outline-primary" onClick={this.searchSubmit}>
 		 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">

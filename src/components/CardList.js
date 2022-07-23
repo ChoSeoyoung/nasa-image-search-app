@@ -9,7 +9,7 @@ const CardList = props => {
 	const cardItems1 = new Array(cardLength).fill(1).map((m, i) => {
 		const index = i;
 		const items = props.cards[index];
-		if (items && index%3==0) {
+		if (items) {
 			id = items.data[0].nasa_id
 			image = items.links[0].href;
 			title = items.data[0].title;
@@ -72,13 +72,7 @@ const CardList = props => {
 	return (
 		<div style={{margin:"auto", width: "75vw"}}>
 			<div className="text-start m-2"><b>{realCardLength}</b><span style={{color:"#888888"}}> image(s) in the search result.</span></div>
-			<table style={{margin:"auto", width: "75vw"}}>
-				<tr>
-				<td style={{verticalAlign:"top"}}>{cardItems1}</td>
-				<td style={{verticalAlign:"top"}}>{cardItems2}</td>
-				<td style={{verticalAlign:"top"}}>{cardItems3}</td>
-				</tr>
-			</table>
+			{cardItems1}
 		</div>
 	);
 };

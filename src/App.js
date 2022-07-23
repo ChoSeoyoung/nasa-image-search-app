@@ -123,7 +123,7 @@ class App extends React.Component{
     render(){
     	return(<div className="App">
 		<header className="App-header">
-        	<Header imageSearch={this.imageSearch} keyWord={this.state.keyWord} Option={this.state.Option} InputTextChange={this.InputTextChange} SelectBoxChange={this.SelectBoxChange} words={this.state.words} deleteWord={this.deleteWord}></Header>
+        	<Header imageSearch={this.imageSearch} InputTextChange={this.InputTextChange} SelectBoxChange={this.SelectBoxChange} words={this.state.words} deleteWord={this.deleteWord}></Header>
 		</header>
 		<section className="App-Section">
         <CardList cards={this.state.cards} cardIndex={this.state.cardIndex}></CardList>
