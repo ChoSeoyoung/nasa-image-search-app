@@ -1,148 +1,81 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './App.css';
+import {createStore} from 'redux';
+import {Provider, useSelector, useDispatch} from 'react-redux';
 
 import Header from './components/Header.js'
+import Card from './components/Card.js'
 import CardList from './components/CardList.js'
+import Button from './components/Button.js'
 
-import axios from 'axios';
+import axios from 'axios'
 
+function reducer(state, action){
+	if(state===undefined){
+		return {
+			keyWord:"egypt",
+			option:"default",
+			pageIndex:1,
+			words:["egypt"],
+		}	
+	}
 
-class App extends React.Component{
-	constructor(props) {
-    	super(props);
-
-    	this.state = {
-      		cards: [],
-			cardIndex: 1,
-			Option: "default",
-			keyWord: "egypt",
-			words: [],
-    	};
-		
-    	this.imageSearch("egypt");
-		this.pageIndex=1;
-  	}
-	
-
-	imageSearch = keyWord => {
-		let url;
-		if (this.state.Option == "default"){
-			url = `https://images-api.nasa.gov/search?q=${keyWord}`;
-		} else if (this.state.Option == "title") {
-			url = `https://images-api.nasa.gov/search?title=${keyWord}`;
-		} else if (this.state.Option == "location"){
-			url = `https://images-api.nasa.gov/search?location=${keyWord}`;
-		} else if (this.state.Option == "year"){
-			let date_pattern = /$\d{4}$/;
-			if(!date_pattern.test(`${keyWord}`)){
-				alert("Input should be YYYY format.");
-			return;}
-			url = `https://images-api.nasa.gov/search?year=${keyWord}`;
-		}
-
-		axios.get(url)
-		.then(res => {
-      		const filteredItems = [];
-      		res.data.collection.items.forEach(item => {
-        	if (item.data[0].media_type === "image" && item.links[0].href) {
-        		filteredItems.push(item); //사진필수
-            }});
-            this.setState({cards: filteredItems});
-            this.setState({cardIndex: 1});
-			let copyArray = [...this.state.words];
-            if(copyArray.includes(`${keyWord}`)){
-                let idx = copyArray.indexOf(`${keyWord}`);
-                copyArray.splice(`${idx}`,1);
-            }
-            if(copyArray.length>7){
-                copyArray.splice(0,1);
-            }
-            copyArray.push(`${keyWord}`);
-			this.setState({words:copyArray});
-			
-			var btn = document.getElementById("btn-more");
-			btn.disabled=false;
-		});
-  	};
-		
-	InputTextChange = keyWord => {
-		this.setState({keyWord: keyWord});
-	};
-
-	SelectBoxChange = event => {
+	const newState = {...state};
+	if(action.type==='SEARCH'){
+		newState.keyWord=document.getElementById('search-input').value;
 		let sel = document.getElementById("searchbar-options");
-		this.setState({
-			Option: sel.options[sel.selectedIndex].value
-		});
-	}
-
-	deleteWord = keyWord => {
-		if(this.state.words.includes(`${keyWord}`)){
-			this.setState({words: this.state.words.filter((element) => element !== `${keyWord}`)});
+		newState.option=sel.options[sel.selectedIndex].value;
+		newState.pageIndex=1;
+		let copyArray = [...newState.words];
+		if(copyArray.includes(newState.keyWord)){
+			let idx = copyArray.indexOf(newState.keyWord);
+			copyArray.splice(`${idx}`,1);
 		}
-  	};
-	
-	morePages = event => {
-		let data = this.state.cards.length;
-		let dataIndex = this.state.cardIndex;
-		if(data>12*dataIndex){
-			var newIndex = dataIndex+1;
-			this.setState({cardIndex: newIndex});
-			if(data<=12*newIndex){
-				this.pageIndex+=1;
-				let url;
-				if (this.state.Option == "default"){
-					url = `https://images-api.nasa.gov/search?q=${this.state.keyWord}&page=${this.pageIndex}`;
-				} else if (this.state.Option == "title") {
-					url = `https://images-api.nasa.gov/search?title=${this.statekeyWord}&page=${this.pageIndex}`;
-				} else if (this.state.Option == "location"){
-					url = `https://images-api.nasa.gov/search?location=${this.state.keyWord}&page=${this.pageIndex}`;
-				} else if (this.state.Option == "year"){
-					let date_pattern = /$\d{4}$/;
-					if(!date_pattern.test(`${this.state.keyWord}`)){
-						alert("Input should be YYYY format.");
-					return;}
-				url = `https://images-api.nasa.gov/search?year=${this.state.keyWord}&page=${this.pageIndex}`;
-				}
-	
-			axios.get(url)
-			.then(res => {
-				let copyCards = [...this.state.cards];
-				res.data.collection.items.forEach(item => {
-				if (item.data[0].media_type === "image" && item.links[0].href) {
-					copyCards.push(item); //사진필수
-				}});
-				this.setState({cards: copyCards});
-				});
-			}
+		if(copyArray.length>7){
+			copyArray.splice(0,1);
 		}
-	}
-	
+		copyArray.push(newState.keyWord);
+		newState.words=copyArray;
+	}else if(action.type==='MORE'){
+		newState.pageIndex=newState.pageIndex+1;
+	}else if(action.type==='DELETEWORD'){
+		if(newState.words.includes(newState.keyWord)){
+			newState.words=newState.words.filter((element) => element !== newState.keyWord);
+		}
+	}else if(action.type==='RE-SEARCH'){
+		newState.keyWord=action.text.history;
+		newState.option="default";
+		newState.pageIndex=1;
 
-    render(){
-    	return(<div className="App">
-		<header className="App-header">
-        	<Header imageSearch={this.imageSearch} InputTextChange={this.InputTextChange} SelectBoxChange={this.SelectBoxChange} words={this.state.words} deleteWord={this.deleteWord}></Header>
-		</header>
-		<section className="App-Section">
-        <CardList cards={this.state.cards} cardIndex={this.state.cardIndex}></CardList>
-		<div style={{margin: "5rem"}}>
-			<button id="btn-more" class="btn btn-default" aria-label="Left Align" onClick={event=>this.morePages(`${this.props.id}`)}>
-				<i class="bi bi-plus-lg">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-				</svg>
-				</i>
-			</button>
-			<div className="m-3" style={{color:"#888888"}}>
-				{this.state.cardIndex}/{Math.ceil(this.state.cards.length/12)}
-			</div>
-		</div>
-		</section>
-    	</div>
-      )
-   }
+		let copyArray = [...newState.words];
+		if(copyArray.includes(newState.keyWord)){
+			let idx = copyArray.indexOf(newState.keyWord);
+			copyArray.splice(`${idx}`,1);
+		}
+		if(copyArray.length>7){
+			copyArray.splice(0,1);
+		}
+		copyArray.push(newState.keyWord);
+		newState.words=copyArray;
+	}
+	return newState;
+}
+
+const store=createStore(reducer);
+
+function App(){
+	return(
+	<Provider store={store}>
+	<div className="App">
+	<Header></Header>
+	<section className="App-Section">
+	<CardList></CardList>
+	<Button></Button>
+	</section>
+	</div>
+	</Provider>
+	)
 }
 
 export default App;
