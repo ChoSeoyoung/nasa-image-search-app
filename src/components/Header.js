@@ -11,7 +11,7 @@ function Header(props){
 		<>
 			<header className="App-header">
 			<div>
-			<div className="m-5" style={{width:"50vw"}}>
+			<div className="m-5" style={{margin:"auto"}}>
 				<h1 className="fw-normal"> NASA Image Searching</h1>
 			</div>
 			<div className="input-group" style={{width:"100%", margin:"auto"}}>

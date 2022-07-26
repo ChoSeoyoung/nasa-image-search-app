@@ -1,8 +1,6 @@
 import React from 'react';
 
 const backgroundDiv = {
-	display: "inline-block",
-	width: "25vw",
 	height: "75vh",
 	margin: "auto",
 	verticalAlign: "bottom"

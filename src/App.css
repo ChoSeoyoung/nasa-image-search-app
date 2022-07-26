@@ -13,6 +13,13 @@
   }
 }
 
+@media (min-width: 640px) {
+  .card {
+    width: 25vw;
+    display: inline-block;
+  }
+}
+
 .App-header {
   background-color: #FFFFFF;
   min-height: 70vh;
