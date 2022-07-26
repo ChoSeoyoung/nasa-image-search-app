@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './App.css';
+
+import reducer from './ruducers/reducer';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 
-import Header from './components/Header.js'
-import CardList from './components/CardList.js'
-import Button from './components/Button.js'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import reducer from './ruducers/reducer';
+import MainPage from './components/main/MainPage.js';
+import NotFound from './components/NotFound';
 
 const store=createStore(reducer);
 
 function App(){
 	return(
 	<Provider store={store}>
+	<Router>
 	<div className="App">
-	<Header></Header>
-	<section className="App-Section">
-	<CardList></CardList>
-	<Button></Button>
-	</section>
+		<Switch>
+			<Route path="/" exact render={()=><MainPage/>}/>
+			<Route path="*" component={NotFound}/>
+		</Switch>
 	</div>
+	</Router>
 	</Provider>
 	)
 }
