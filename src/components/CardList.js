@@ -19,11 +19,11 @@ function CardList(props) {
       	} else if (option == "location"){
         	url = `https://images-api.nasa.gov/search?location=${keyWord}&page=${pageIndex}`;
       	} else if (option == "year"){
-        	let date_pattern = /$\d{4}$/;
+        	let date_pattern = /\d{4}$/;
         	if(!date_pattern.test(`${keyWord}`)){
             	alert("Input should be YYYY format.");
          		return;}
-         	url = `https://images-api.nasa.gov/search?year=${keyWord}&page=${pageIndex}`;
+         	url = `https://images-api.nasa.gov/search?year_start=${keyWord}&page=${pageIndex}`;
       	}
 
       	axios.get(url)
@@ -40,7 +40,7 @@ function CardList(props) {
 			}
 		});
 		
-	}, [keyWord,pageIndex]);
+	}, [keyWord,option,pageIndex]);
 	
 	const cardItems1 = cards.map((item, i) => {
 		if (item) {
