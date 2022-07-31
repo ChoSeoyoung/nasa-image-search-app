@@ -6,7 +6,6 @@ function loadStories(){
     context.keys().forEach((srcFile)=>{
         interopRequireDefault(context(srcFile));
     })
-    require('../src/stories/InputStory');
 }
 
 configure(loadStories, module);
